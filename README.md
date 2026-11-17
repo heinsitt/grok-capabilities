@@ -1,10 +1,11 @@
 # 🤖 Grok Capabilities
 
-> A modern, visual showcase of what **Grok** (by xAI) can do and how it can assist you.
+> A modern showcase of what **Grok** (by xAI) can do and how it can assist you.
 
 [![GitHub](https://img.shields.io/badge/GitHub-heinsitt%2Fgrok--capabilities-181717?style=for-the-badge&logo=github)](https://github.com/heinsitt/grok-capabilities)
 [![xAI](https://img.shields.io/badge/Built%20by-xAI-000000?style=for-the-badge)](https://x.ai)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![CI](https://github.com/heinsitt/grok-capabilities/actions/workflows/ci.yml/badge.svg)](https://github.com/heinsitt/grok-capabilities/actions/workflows/ci.yml)
 
 ---
 
@@ -57,6 +58,21 @@ Grok is built for hard problems: math, science, philosophy, systems design, and 
 
 ---
 
+## 🔧 Advanced GitHub Actions (Added)
+
+This repository now includes modern GitHub Actions workflows that demonstrate advanced patterns:
+
+| Workflow | Description |
+|----------|-------------|
+| `ci.yml` | Continuous Integration with **concurrency**, **path filters**, job dependencies and step summaries |
+| `pages.yml` | Automatically deploys the `docs/` folder to **GitHub Pages** |
+| `reusable-validate.yml` | Example of a **Reusable Workflow** that other repositories can call |
+
+
+See [`.github/workflows/README.md`](.github/workflows/README.md) for detailed usage instructions.
+
+---
+
 ## 🎯 Quick Start Examples
 
 ```text
@@ -73,10 +89,12 @@ Grok is built for hard problems: math, science, philosophy, systems design, and 
 
 ```
 grok-capabilities/
-├── README.md          ← You are here (modern overview)
-├── CAPABILITIES.md    ← Detailed capability list
+├── README.md
+├── CAPABILITIES.md
 ├── docs/
-│   └── index.html     ← Beautiful landing page (GitHub Pages ready)
+│   └── index.html     ← Beautiful landing page
+├── .github/
+│   └── workflows/     ← Advanced GitHub Actions examples
 └── LICENSE
 ```
 
@@ -84,10 +102,8 @@ grok-capabilities/
 
 ## 🌐 Live Landing Page
 
-Enable **GitHub Pages** on this repo (Settings → Pages → Source: main / docs)  
-to see a sleek, modern single-page showcase.
-
-Or just open [`docs/index.html`](docs/index.html).
+Enable **GitHub Pages** (Settings → Pages → Source: GitHub Actions)  
+to see the sleek modern landing page.
 
 ---
 
@@ -96,6 +112,7 @@ Or just open [`docs/index.html`](docs/index.html).
 - Love for truth & curiosity
 - xAI's Grok
 - Modern Markdown + pure CSS for the landing page
+- Advanced GitHub Actions best practices
 
 ---
 

@@ -1,0 +1,67 @@
+name: Reusable Validate
+
+# This is a REUSABLE workflow example.
+# Other repositories can call this workflow.
+
+on:
+  workflow_call:
+    inputs:
+      run-markdown-lint:
+        description: "Whether to run markdown lint"
+        type: boolean
+        default: true
+      run-html-check:
+        description: "Whether to run HTML check"
+        type: boolean
+        default: true
+    outputs:
+      status:
+        description: "Overall status"
+        value: ${{ jobs.final.outputs.status }}
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (Reusable)
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-markdown-lint }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Markdown Lint
+        uses: DavidAnson/markdownlint-cli2-action@v18
+        with:
+          globs: "**/*.md"
+
+  html:
+    name: HTML Check (Reusable)
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-html-check }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Basic HTML check
+        run: |
+          if [ -f docs/index.html ]; then
+            grep -q "<!DOCTYPE html>" docs/index.html
+            echo "HTML check passed"
+          else
+            echo "No HTML file found — skipping"
+          fi
+
+  final:
+    name: Final Status
+    needs: [lint, html]
+    if: always()
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.set.outputs.status }}
+    steps:
+      - id: set
+        run: |
+          if [[ "${{ needs.lint.result }}" == "failure" || "${{ needs.html.result }}" == "failure" ]]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi

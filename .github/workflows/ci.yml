@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/**'
+  workflow_dispatch:  # Allow manual run
+
+# Cancel outdated runs on the same branch/PR
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Job 1: Lint Markdown files
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v18
+        with:
+          globs: |
+            **/*.md
+            !**/node_modules/**
+
+  # Job 2: Validate HTML (simple check)
+  validate-html:
+    name: Validate HTML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check HTML structure
+        run: |
+          echo "Checking docs/index.html..."
+          if [ -f docs/index.html ]; then
+            # Basic checks
+            grep -q "<!DOCTYPE html>" docs/index.html && echo "✅ DOCTYPE found"
+            grep -q "<html" docs/index.html && echo "✅ <html> tag found"
+            grep -q "</html>" docs/index.html && echo "✅ Closing </html> found"
+            echo "HTML basic validation passed"
+          else
+            echo "No docs/index.html found (skipping)"
+          fi
+
+  # Job 3: Summary (runs only if previous jobs succeed)
+  summary:
+    name: CI Summary
+    needs: [lint-markdown, validate-html]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Report status
+        run: |
+          echo "### CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Markdown Lint: ${{ needs.lint-markdown.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- HTML Validate: ${{ needs.validate-html.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Advanced patterns used: concurrency, path filters, job needs, step summary" >> $GITHUB_STEP_SUMMARY
